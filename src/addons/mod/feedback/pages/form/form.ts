@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, viewChild } from '@angular/core';
 import { CoreSite } from '@classes/sites/site';
 import { CoreCourse, CoreCourseCommonModWSOptions } from '@features/course/services/course';
 import { CoreCourseModuleData } from '@features/course/services/course-helper';
@@ -57,14 +57,13 @@ import { CoreContentLinksHelper } from '@features/contentlinks/services/contentl
     selector: 'page-addon-mod-feedback-form',
     templateUrl: 'form.html',
     styleUrls: ['../../feedback.scss', 'form.scss'],
-    standalone: true,
     imports: [
         CoreSharedModule,
     ],
 })
 export default class AddonModFeedbackFormPage implements OnInit, OnDestroy, CanLeave {
 
-    @ViewChild(IonContent) content?: IonContent;
+    readonly content = viewChild(IonContent);
 
     protected module?: CoreCourseModuleData;
     protected currentPage?: number;
@@ -350,7 +349,7 @@ export default class AddonModFeedbackFormPage implements OnInit, OnDestroy, CanL
             return;
         }
 
-        this.content?.scrollToTop();
+        this.content()?.scrollToTop();
         this.feedbackLoaded = false;
 
         const responses = AddonModFeedbackHelper.getPageItemsResponses(this.items);
@@ -395,6 +394,8 @@ export default class AddonModFeedbackFormPage implements OnInit, OnDestroy, CanL
                     readingStrategy: this.offline ? CoreSitesReadingStrategy.PREFER_CACHE : CoreSitesReadingStrategy.ONLY_NETWORK,
                     siteId: this.currentSite.getId(),
                 });
+
+                CoreCourse.checkModuleCompletion(this.courseId, this.module?.completiondata);
             } else if (typeof response.jumpto != 'number' || response.jumpto == this.currentPage) {
                 // Errors on questions, stay in page.
             } else {

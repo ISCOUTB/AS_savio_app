@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, effect, viewChild } from '@angular/core';
 import { IonTabs } from '@ionic/angular';
 import { BackButtonEvent } from '@ionic/core';
 import { Subscription } from 'rxjs';
@@ -44,6 +44,7 @@ import {
 import { CoreSharedModule } from '@/core/shared.module';
 import { CoreMainMenuUserButtonComponent } from '../../components/user-menu-button/user-menu-button';
 import { BackButtonPriority } from '@/core/constants';
+import { CoreKeyboard } from '@singletons/keyboard';
 
 const ANIMATION_DURATION = 500;
 
@@ -74,7 +75,6 @@ const ANIMATION_DURATION = 500;
         ]),
     ],
     styleUrl: 'menu.scss',
-    standalone: true,
     imports: [
         CoreSharedModule,
         CoreMainMenuUserButtonComponent,
@@ -104,7 +104,7 @@ export default class CoreMainMenuPage implements OnInit, OnDestroy {
     protected firstSelectedTab?: string;
     protected logger: CoreLogger;
 
-    @ViewChild('mainTabs') mainTabs?: IonTabs;
+    readonly mainTabs = viewChild.required<IonTabs>('mainTabs');
 
     tabAction: CoreMainMenuRoleTab;
 
@@ -117,9 +117,25 @@ export default class CoreMainMenuPage implements OnInit, OnDestroy {
         this.navSubscription = Router.events
             .pipe(filter(event => event instanceof NavigationEnd))
             .subscribe(() => {
-                this.isMainScreen = !this.mainTabs?.outlet.canGoBack();
+                this.isMainScreen = !this.mainTabs().outlet?.canGoBack();
                 this.updateVisibility();
             });
+
+        if (CorePlatform.isIOS()) {
+            effect(() => {
+                const shown = CoreKeyboard.keyboardShownSignal();
+                // In iOS, the resize event is triggered before the keyboard is opened/closed and not triggered again once done.
+                // Init handlers again once keyboard is closed since the resize event doesn't have the updated height.
+                if (!shown) {
+                    this.updateHandlers();
+
+                    // If the device is slow it can take a bit more to update the window height. Retry in a few ms.
+                    setTimeout(() => {
+                        this.updateHandlers();
+                    }, 250);
+                }
+            });
+        }
     }
 
     /**
@@ -130,7 +146,7 @@ export default class CoreMainMenuPage implements OnInit, OnDestroy {
 
         this.initAfterLoginNavigations();
 
-        this.isMainScreen = !this.mainTabs?.outlet.canGoBack();
+        this.isMainScreen = !this.mainTabs().outlet?.canGoBack();
         this.updateVisibility();
 
         this.subscription = CoreMainMenuDelegate.getHandlersObservable().subscribe((handlers) => {
@@ -151,20 +167,6 @@ export default class CoreMainMenuPage implements OnInit, OnDestroy {
         });
         document.addEventListener('ionBackButton', this.backButtonFunction);
 
-        if (CorePlatform.isIOS()) {
-            // In iOS, the resize event is triggered before the keyboard is opened/closed and not triggered again once done.
-            // Init handlers again once keyboard is closed since the resize event doesn't have the updated height.
-            this.keyboardObserver = CoreEvents.on(CoreEvents.KEYBOARD_CHANGE, (kbHeight: number) => {
-                if (kbHeight === 0) {
-                    this.updateHandlers();
-
-                    // If the device is slow it can take a bit more to update the window height. Retry in a few ms.
-                    setTimeout(() => {
-                        this.updateHandlers();
-                    }, 250);
-                }
-            });
-        }
         CoreEvents.trigger(CoreEvents.MAIN_HOME_LOADED);
     }
 
@@ -355,7 +357,7 @@ export default class CoreMainMenuPage implements OnInit, OnDestroy {
                 // Remove curent and previous tabs from history.
                 this.selectHistory = this.selectHistory.filter((tab) => this.selectedTab != tab && previousTab != tab);
 
-                this.mainTabs?.select(previousTab);
+                this.mainTabs()?.select(previousTab);
 
                 return;
             }
@@ -363,7 +365,7 @@ export default class CoreMainMenuPage implements OnInit, OnDestroy {
             if (this.firstSelectedTab && this.selectedTab != this.firstSelectedTab) {
                 // All history is gone but we are not in the first selected tab.
                 this.selectHistory = [];
-                this.mainTabs?.select(this.firstSelectedTab);
+                this.mainTabs()?.select(this.firstSelectedTab);
 
                 return;
             }
@@ -429,7 +431,7 @@ class CoreMainMenuRoleTab extends CoreAriaRoleTab<CoreMainMenuPage> {
      * @inheritdoc
      */
     selectTab(tabId: string): void {
-        this.componentInstance.mainTabs?.select(tabId);
+        this.componentInstance.mainTabs()?.select(tabId);
     }
 
 }

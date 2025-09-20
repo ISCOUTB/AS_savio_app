@@ -367,7 +367,7 @@ export class CoreWSProvider {
             this.mimeTypeCache[url] = mimeType;
 
             return mimeType || '';
-        } catch (error) {
+        } catch {
             // Error, resolve with empty mimetype.
             return '';
         }
@@ -398,7 +398,7 @@ export class CoreWSProvider {
      * @returns Timeout in ms.
      */
     getRequestTimeout(): number {
-        return CoreNetwork.isNetworkAccessLimited() ? CoreConstants.WS_TIMEOUT : CoreConstants.WS_TIMEOUT_WIFI;
+        return CoreNetwork.isCellular() ? CoreConstants.WS_TIMEOUT : CoreConstants.WS_TIMEOUT_WIFI;
     }
 
     /**
@@ -1203,6 +1203,9 @@ export class CoreWSProvider {
                     // Error is a response object.
                     response = error as NativeHttpResponse;
 
+                    // If it's a SSL error, the response doesn't contain headers. Make sure it always exists, even if it's empty.
+                    response.headers = response.headers || {};
+
                     // Redirections should have been handled by the platform,
                     // but Android does not follow redirections between HTTP and HTTPS.
                     // See: https://developer.android.com/reference/java/net/HttpURLConnection#response-handling
@@ -1277,7 +1280,7 @@ export class CoreWSProvider {
             const result = await this.performHead(url);
 
             return result.status >= 200 && result.status < 300;
-        } catch (error) {
+        } catch {
             return false;
         }
     }

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, viewChild } from '@angular/core';
 
-import { CoreSettingsHandlerToDisplay, CoreSettingsPageHandlerToDisplay } from '../../services/settings-delegate';
+import { CoreSettingsHandlerToDisplay } from '../../services/settings-delegate';
 import { CoreEventObserver, CoreEvents } from '@singletons/events';
 import { CoreSites } from '@services/sites';
 import { CoreNavigator } from '@services/navigator';
@@ -38,16 +38,15 @@ import { CoreSharedModule } from '@/core/shared.module';
 @Component({
     selector: 'page-core-site-preferences',
     templateUrl: 'site.html',
-    standalone: true,
     imports: [
         CoreSharedModule,
     ],
 })
 export default class CoreSitePreferencesPage implements AfterViewInit, OnDestroy {
 
-    @ViewChild(CoreSplitViewComponent) splitView!: CoreSplitViewComponent;
+    readonly splitView = viewChild.required(CoreSplitViewComponent);
 
-    handlers: CoreListItemsManager<CoreSettingsPageHandlerToDisplay, CoreSettingsHandlersSource>;
+    handlers: CoreListItemsManager<CoreSettingsHandlerToDisplay, CoreSettingsHandlersSource>;
 
     dataSaver = false;
     limitedConnection = false;
@@ -74,13 +73,13 @@ export default class CoreSitePreferencesPage implements AfterViewInit, OnDestroy
         }, this.siteId);
 
         this.isOnline = CoreNetwork.isOnline();
-        this.limitedConnection = this.isOnline && CoreNetwork.isNetworkAccessLimited();
+        this.limitedConnection = CoreNetwork.isCellular();
 
         this.networkObserver = CoreNetwork.onChange().subscribe(() => {
             // Execute the callback in the Angular zone, so change detection doesn't stop working.
             NgZone.run(() => {
                 this.isOnline = CoreNetwork.isOnline();
-                this.limitedConnection = this.isOnline && CoreNetwork.isNetworkAccessLimited();
+                this.limitedConnection = CoreNetwork.isCellular();
             });
         });
     }
@@ -96,14 +95,15 @@ export default class CoreSitePreferencesPage implements AfterViewInit, OnDestroy
         try {
             await this.fetchData();
         } finally {
-            const handler = pageToOpen ? this.handlers.items.find(handler => handler.page == pageToOpen) : undefined;
+            const handler = pageToOpen ? this.handlers.items.find(handler =>
+                ('page' in handler) && handler.page === pageToOpen) : undefined;
 
             if (handler) {
-                this.handlers.watchSplitViewOutlet(this.splitView);
+                this.handlers.watchSplitViewOutlet(this.splitView());
 
                 await this.handlers.select(handler);
             } else {
-                await this.handlers.start(this.splitView);
+                await this.handlers.start(this.splitView());
             }
         }
     }

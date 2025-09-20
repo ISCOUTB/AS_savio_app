@@ -24,7 +24,7 @@ import { TestingBehatElementLocator, TestingBehatFindOptions } from './behat-run
 @Injectable({ providedIn: 'root' })
 export class TestingBehatDomUtilsService {
 
-    protected static readonly MULTI_ELEM_ALLOWED = ['P', 'SPAN', 'ION-LABEL'];
+    protected static readonly MULTI_ELEM_ALLOWED = ['P', 'SPAN', 'ION-LABEL', 'LI', 'ION-BUTTON'];
 
     /**
      * Check if an element is clickable.
@@ -64,6 +64,12 @@ export class TestingBehatDomUtilsService {
         }
 
         if (getComputedStyle(element).display === 'none') {
+            return false;
+        }
+
+        if (element.closest('.ion-page.ion-page-hidden')) {
+            // Element is inside a hidden page, this happens for example with tabs-outlet.
+            // Without this check, behat finds elements in tabs (pages) that aren't active.
             return false;
         }
 

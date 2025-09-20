@@ -111,6 +111,17 @@ export class CoreText {
     }
 
     /**
+     * Convert a camel case text to kebab case.
+     * Example: "myVariableName" -> "my-variable-name".
+     *
+     * @param text The text to convert.
+     * @returns The converted text.
+     */
+    static camelCaseToKebabCase(text: string): string {
+        return text.replace(/[A-Z]/g, letter => '-' + letter.toLowerCase());
+    }
+
+    /**
      * Copies a text to clipboard and shows a toast message.
      *
      * @param text Text to be copied
@@ -124,7 +135,7 @@ export class CoreText {
             virtualInput.innerHTML = text;
             virtualInput.select();
             virtualInput.setSelectionRange(0, 99999);
-            document.execCommand('copy'); // eslint-disable-line deprecation/deprecation
+            document.execCommand('copy'); // eslint-disable-line @typescript-eslint/no-deprecated
         }
 
         // Show toast using ionicLoading.

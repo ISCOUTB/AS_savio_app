@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, inject, input } from '@angular/core';
 import { CoreCancellablePromise } from '@classes/cancellable-promise';
 import { CoreUserTourDirectiveOptions } from '@directives/user-tour';
 import { CoreUserToursAlignment, CoreUserToursSide } from '@features/usertours/services/user-tours';
@@ -29,16 +29,15 @@ import { CoreSharedModule } from '@/core/shared.module';
     selector: 'core-block-side-blocks-button',
     templateUrl: 'side-blocks-button.html',
     styleUrl: 'side-blocks-button.scss',
-    standalone: true,
     imports: [
         CoreSharedModule,
     ],
 })
 export class CoreBlockSideBlocksButtonComponent implements OnInit, OnDestroy {
 
-    @Input({ required: true }) contextLevel!: ContextLevel;
-    @Input({ required: true }) instanceId!: number;
-    @Input() myDashboardPage?: string;
+    readonly contextLevel = input.required<ContextLevel>();
+    readonly instanceId = input.required<number>();
+    readonly myDashboardPage = input<string>();
 
     userTour: CoreUserTourDirectiveOptions = {
         id: 'side-blocks-button',
@@ -54,12 +53,8 @@ export class CoreBlockSideBlocksButtonComponent implements OnInit, OnDestroy {
         },
     };
 
-    protected element: HTMLElement;
+    protected element: HTMLElement = inject(ElementRef).nativeElement;
     protected slotPromise?: CoreCancellablePromise<void>;
-
-    constructor(el: ElementRef) {
-        this.element = el.nativeElement;
-    }
 
     /**
      * @inheritdoc
@@ -77,9 +72,9 @@ export class CoreBlockSideBlocksButtonComponent implements OnInit, OnDestroy {
         CoreModals.openSideModal({
             component: CoreBlockSideBlocksComponent,
             componentProps: {
-                contextLevel: this.contextLevel,
-                instanceId: this.instanceId,
-                myDashboardPage: this.myDashboardPage,
+                contextLevel: this.contextLevel(),
+                instanceId: this.instanceId(),
+                myDashboardPage: this.myDashboardPage(),
             },
         });
     }

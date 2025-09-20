@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ElementRef, inject, viewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { IonContent } from '@ionic/angular';
 import { CoreError } from '@classes/errors/error';
@@ -67,7 +67,6 @@ import { CoreSharedModule } from '@/core/shared.module';
     selector: 'page-addon-mod-lesson-player',
     templateUrl: 'player.html',
     styleUrl: 'player.scss',
-    standalone: true,
     imports: [
         CoreSharedModule,
         CoreEditorRichTextEditorComponent,
@@ -75,11 +74,11 @@ import { CoreSharedModule } from '@/core/shared.module';
 })
 export default class AddonModLessonPlayerPage implements OnInit, OnDestroy, CanLeave {
 
-    @ViewChild(IonContent) content?: IonContent;
-    @ViewChild('questionFormEl') formElement?: ElementRef;
+    readonly content = viewChild(IonContent);
+    readonly formElement = viewChild<ElementRef>('questionFormEl');
 
     component = ADDON_MOD_LESSON_COMPONENT_LEGACY;
-    readonly LESSON_EOL = AddonModLessonJumpTo.EOL;
+    lessonEol = AddonModLessonJumpTo.EOL;
     questionForm?: FormGroup; // The FormGroup for question pages.
     title?: string; // The page title.
     lesson?: AddonModLessonLessonWSData; // The lesson object.
@@ -117,13 +116,9 @@ export default class AddonModLessonPlayerPage implements OnInit, OnDestroy, CanL
     protected jumps?: AddonModLessonPossibleJumps; // All possible jumps.
     protected firstPageLoaded?: boolean; // Whether the first page has been loaded.
     protected retakeToReview?: number; // Retake to review.
-    protected menuShown = false; // Whether menu is shown.
-
-    constructor(
-        protected changeDetector: ChangeDetectorRef,
-        protected formBuilder: FormBuilder,
-    ) {
-    }
+    protected menuShown = false;
+    protected changeDetector = inject(ChangeDetectorRef);
+    protected formBuilder = inject(FormBuilder);
 
     /**
      * @inheritdoc
@@ -183,7 +178,7 @@ export default class AddonModLessonPlayerPage implements OnInit, OnDestroy, CanL
             }
         }
 
-        CoreForms.triggerFormCancelledEvent(this.formElement, CoreSites.getCurrentSiteId());
+        CoreForms.triggerFormCancelledEvent(this.formElement(), CoreSites.getCurrentSiteId());
 
         return true;
     }
@@ -706,7 +701,7 @@ export default class AddonModLessonPlayerPage implements OnInit, OnDestroy, CanL
 
             if (formSubmitted) {
                 CoreForms.triggerFormSubmittedEvent(
-                    this.formElement,
+                    this.formElement(),
                     result.sent,
                     CoreSites.getCurrentSiteId(),
                 );

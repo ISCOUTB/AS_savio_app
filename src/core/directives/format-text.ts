@@ -20,12 +20,11 @@ import {
     EventEmitter,
     OnChanges,
     SimpleChange,
-    Optional,
     ViewContainerRef,
-    ViewChild,
     OnDestroy,
-    Inject,
     ChangeDetectorRef,
+    inject,
+    viewChild,
 } from '@angular/core';
 
 import { CoreSites } from '@services/sites';
@@ -60,7 +59,7 @@ import { CoreViewer } from '@features/viewer/services/viewer';
 import { CorePromiseUtils } from '@singletons/promise-utils';
 import { CoreAlerts } from '@services/overlays/alerts';
 import { CoreLang, CoreLangFormat } from '@services/lang';
-import { CoreBoostrap } from '@singletons/bootstrap';
+import { CoreBootstrap } from '@singletons/bootstrap';
 
 /**
  * Directive to format text rendered. It renders the HTML and treats all links and media, using CoreLinkDirective
@@ -73,11 +72,10 @@ import { CoreBoostrap } from '@singletons/bootstrap';
  */
 @Directive({
     selector: 'core-format-text',
-    standalone: true,
 })
 export class CoreFormatTextDirective implements OnChanges, OnDestroy, AsyncDirective {
 
-    @ViewChild(CoreCollapsibleItemDirective) collapsible?: CoreCollapsibleItemDirective;
+    readonly collapsible = viewChild(CoreCollapsibleItemDirective);
 
     @Input() text?: string; // The text to format.
     @Input() siteId?: string; // Site ID to use.
@@ -108,34 +106,31 @@ export class CoreFormatTextDirective implements OnChanges, OnDestroy, AsyncDirec
     @Output() filterContentRenderingComplete = new EventEmitter<void>(); // Called when the filters have finished rendering content.
     @Output() onClick: EventEmitter<void> = new EventEmitter(); // Called when clicked.
 
-    protected element: HTMLElement;
     protected elementControllers: ElementController[] = [];
     protected domPromises: CoreCancellablePromise<void>[] = [];
     protected domElementPromise?: CoreCancellablePromise<void>;
     protected externalContentInstances: CoreExternalContentDirective[] = [];
+    protected element: HTMLElement = inject(ElementRef).nativeElement;
+    protected viewContainerRef = inject(ViewContainerRef);
+    protected refreshContext = inject<CoreRefreshContext>(CORE_REFRESH_CONTEXT, { optional: true });
 
     protected static readonly EMPTY_TEXT = '&nbsp;';
 
-    constructor(
-        element: ElementRef,
-        protected viewContainerRef: ViewContainerRef,
-        @Optional() @Inject(CORE_REFRESH_CONTEXT) protected refreshContext?: CoreRefreshContext,
-    ) {
-        CoreDirectivesRegistry.register(element.nativeElement, this);
+    constructor() {
+        CoreDirectivesRegistry.register(this.element, this);
 
-        this.element = element.nativeElement;
         this.element.classList.add('core-loading'); // Hide contents until they're treated.
 
         this.element.innerHTML = CoreFormatTextDirective.EMPTY_TEXT;
 
-        this.element.addEventListener('click', (event) => this.elementClicked(event));
+        this.element.addEventListener('click', (event: MouseEvent) => this.elementClicked(event));
     }
 
     /**
      * @inheritdoc
      */
     ngOnChanges(changes: { [name: string]: SimpleChange }): void {
-        this.siteId = this.siteId || CoreSites.getCurrentSiteId();
+        this.siteId = this.siteId ?? CoreSites.getCurrentSiteId();
 
         if (changes.text || changes.filter || changes.contextLevel || changes.contextInstanceId) {
             this.formatAndRenderContents();
@@ -344,7 +339,7 @@ export class CoreFormatTextDirective implements OnChanges, OnDestroy, AsyncDirec
             return;
         }
 
-        this.collapsible?.elementClicked(e);
+        this.collapsible()?.elementClicked(e);
     }
 
     /**
@@ -500,6 +495,9 @@ export class CoreFormatTextDirective implements OnChanges, OnDestroy, AsyncDirec
      * @returns Promise resolved when done.
      */
     protected treatHTMLElements(div: HTMLElement, site?: CoreSite): ElementController[] {
+        // Treat alternative content elements first, that way the search of elements won't treat the elements that are removed.
+        this.treatAlternativeContentElements(div);
+
         const images = Array.from(div.querySelectorAll('img'));
         const anchors = Array.from(div.querySelectorAll('a'));
         const audios = Array.from(div.querySelectorAll('audio'));
@@ -620,7 +618,7 @@ export class CoreFormatTextDirective implements OnChanges, OnDestroy, AsyncDirec
             return new FrameElementController(frame, !this.disabled);
         }).filter((controller): controller is FrameElementController => controller !== undefined);
 
-        CoreBoostrap.handleBootstrapTooltipsAndPopovers(div, {
+        CoreBootstrap.handleJS(div, {
             siteId: this.siteId,
             component: this.component,
             componentId: this.componentId,
@@ -653,6 +651,43 @@ export class CoreFormatTextDirective implements OnChanges, OnDestroy, AsyncDirec
             ...iframeControllers,
             ...frameControllers,
         ];
+    }
+
+    /**
+     * Treat elements with data attributes to display an alternative content in the app.
+     *
+     * @param div Container where to search the elements.
+     */
+    protected treatAlternativeContentElements(div: HTMLElement): void {
+        const appAltElements = Array.from(div.querySelectorAll<HTMLElement>(
+            '*[data-app-alt-url],*[data-app-alt-msg]',
+        ));
+
+        appAltElements.forEach((element) => {
+            const url = element.dataset.appAltUrl;
+            const message = element.dataset.appAltMsg;
+            if (!message && !url) {
+                return;
+            }
+
+            // Remove the original attributes and also app-url to avoid possible conflicts.
+            element.removeAttribute('data-app-alt-url');
+            element.removeAttribute('data-app-alt-msg');
+            element.removeAttribute('data-app-url');
+
+            let newContent = message ? `<p>${message}</p>` : '';
+            if (url) {
+                // Create a link using the appUrl format to reuse all the logic of appUrl data attributes.
+                let dataAttributes = `data-app-url="${url}"`;
+                for (const attr in element.dataset) {
+                    dataAttributes += ` data-${CoreText.camelCaseToKebabCase(attr)}="${element.dataset[attr]}"`;
+                }
+
+                newContent += `<p><a href="${url}" ${dataAttributes}>${url}</a></p>`;
+            }
+
+            element.innerHTML = newContent;
+        });
     }
 
     /**

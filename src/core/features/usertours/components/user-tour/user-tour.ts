@@ -18,11 +18,11 @@ import {
     Component,
     ElementRef,
     EventEmitter,
-    HostBinding,
+    inject,
     Input,
     OnDestroy,
     Output,
-    ViewChild,
+    viewChild,
 } from '@angular/core';
 import { CorePromisedValue } from '@classes/promised-value';
 import { CoreUserToursFocusLayout } from '@features/usertours/classes/focus-layout';
@@ -47,10 +47,14 @@ import { BackButtonPriority } from '@/core/constants';
     selector: 'core-user-tours-user-tour',
     templateUrl: 'core-user-tours-user-tour.html',
     styleUrl: 'user-tour.scss',
-    standalone: true,
     imports: [
         CoreSharedModule,
     ],
+    host: {
+        '[class.is-active]': 'active',
+        '[class.is-popover]': 'popover',
+        '[class.backdrop]': 'backdrop',
+    },
 })
 export class CoreUserToursUserTourComponent implements AfterViewInit, OnDestroy {
 
@@ -63,10 +67,12 @@ export class CoreUserToursUserTourComponent implements AfterViewInit, OnDestroy 
     @Input() alignment?: CoreUserToursAlignment;
     @Output() beforeDismiss = new EventEmitter<void>();
     @Output() afterDismiss = new EventEmitter<void>();
-    @HostBinding('class.is-active') active = false;
-    @HostBinding('class.is-popover') popover = false;
-    @HostBinding('class.backdrop') backdrop = true;
-    @ViewChild('wrapper') wrapper?: ElementRef<HTMLElement>;
+
+    protected active = false;
+    protected popover = false;
+    protected backdrop = true;
+
+    readonly wrapper = viewChild<ElementRef<HTMLElement>>('wrapper');
 
     protected static readonly ANIMATION_DURATION = 200;
     protected static readonly BACKDROP_DISMISS_SAFETY_TRESHOLD = 1000;
@@ -74,7 +80,7 @@ export class CoreUserToursUserTourComponent implements AfterViewInit, OnDestroy 
     focusStyles?: string;
     popoverWrapperStyles?: string;
     popoverWrapperArrowStyles?: string;
-    private element: HTMLElement;
+    private element: HTMLElement = inject(ElementRef).nativeElement;
     private tour?: HTMLElement;
     private wrapperTransform = '';
     private wrapperElement = new CorePromisedValue<HTMLElement>();
@@ -86,10 +92,8 @@ export class CoreUserToursUserTourComponent implements AfterViewInit, OnDestroy 
     protected content?: HTMLIonContentElement | null;
     protected lastActivatedTime = 0;
 
-    constructor({ nativeElement: element }: ElementRef<HTMLElement>) {
-        this.element = element;
-
-        CoreDirectivesRegistry.register(element, this);
+    constructor() {
+        CoreDirectivesRegistry.register(this.element, this);
 
         this.element.addEventListener('click', (event) =>
             this.dismissOnBackOrBackdrop(event.target as HTMLElement));
@@ -99,11 +103,12 @@ export class CoreUserToursUserTourComponent implements AfterViewInit, OnDestroy 
      * @inheritdoc
      */
     ngAfterViewInit(): void {
-        if (!this.wrapper) {
+        const wrapper = this.wrapper();
+        if (!wrapper) {
             return;
         }
 
-        this.wrapperElement.resolve(this.wrapper.nativeElement);
+        this.wrapperElement.resolve(wrapper.nativeElement);
     }
 
     /**
