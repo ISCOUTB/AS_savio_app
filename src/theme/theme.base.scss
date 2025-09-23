@@ -572,3 +572,85 @@ video::-webkit-media-text-track-display {
     clip: auto;
     white-space: normal;
 }
+
+/* Barra superior personalizada */
+.custom-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-bottom: 2px solid #0073e6;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+.custom-topbar .topbar-row {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+}
+.custom-topbar .topbar-logo {
+    height: 32px;
+    margin-right: 8px;
+}
+.custom-topbar .topbar-links {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+.custom-topbar .topbar-link {
+    font-weight: bold;
+    color: #0073e6;
+    background: #eaf4ff;
+    border-radius: 6px 6px 0 0;
+    padding: 6px 12px;
+    margin-right: 4px;
+    text-decoration: none;
+    font-size: 1rem;
+    white-space: nowrap;
+}
+.custom-topbar .topbar-link.active {
+    background: #fff;
+    border-bottom: 2px solid #0073e6;
+}
+
+/* Espaciado para que el contenido no quede debajo de la barra superior */
+.has-custom-topbar {
+    padding-top: 70px;
+}
+
+/* Barra inferior personalizada */
+.custom-bottombar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-top: 1.5px solid #e0e0e0;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.04);
+    z-index: 1000;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 56px;
+}
+.custom-bottombar .bottombar-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #757575;
+    font-size: 1.5rem;
+    text-decoration: none;
+}
+.custom-bottombar .bottombar-icon.active {
+    color: #0073e6;
+}
+
+/* Espaciado para que el contenido no quede debajo de la barra inferior */
+.has-custom-bottombar {
+    padding-bottom: 60px;
+}

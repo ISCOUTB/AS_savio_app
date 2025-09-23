@@ -85,7 +85,7 @@ $core-course-image-background: #81ecec, #74b9ff, #a29bfe, #dfe6e9, #00b894, #098
 $core-dd-question-colors: #FFFFFF, #B0C4DE, #DCDCDC, #D8BFD8, #87CEFA, #DAA520, #FFD700, #F0E68C !default;
 $core-text-hightlight-background-color: color.adjust($blue, $lightness: 40%) !default;
 
-$core-fixed-url: false !default;
+$core-fixed-url: true !default;
 $core-always-show-main-menu: false !default;
 $core-format-text-never-shorten: false !default;
 
@@ -108,9 +108,9 @@ $core-login-hide-need-help: false !default;
 $core-login-hide-qrcode: false !default;
 
 // Configuration options for more page. (deprecated on 4.0)
-$core-more-hide-siteinfo: false !default;
-$core-more-hide-sitename: false !default;
-$core-more-hide-siteurl: false !default;
+$core-more-hide-siteinfo: true !default;
+$core-more-hide-sitename: true !default;
+$core-more-hide-siteurl: true !default;
 
 // Configuration options for user page.
 $core-user-hide-siteinfo: $core-more-hide-siteinfo !default;
