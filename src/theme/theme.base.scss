@@ -15,6 +15,9 @@
     &.ios {
         font-size: calc(100% * var(--zoom-ratio));
     }
+    // Gradient used for header background linke the logo or "Vista general del curso" (AUN NO SE SI FUNCIONA AQUI O DONDE SE COLOCA PARA USARLO)
+    // VIENDO HAY UN DOCUMENTO ESPECIFICO PARA EL HEADER ENTONCES TAL VEZ IRIA AHI
+    --core-header-gradient: linear-gradient(to bottom, #f4f4f4, #e5e5e5);
 
     // Apply zoom ratio to safe area and keyboard height CSS variable.
     // Also, store safe area variables as --root-safe-area-*.
@@ -60,6 +63,8 @@ a {
     font-weight: bold;
 }
 
+// COMO PUEDEN VER AQUI ESTAN USANDO TIPOGRAFIA, ENTONCES HAY QUE VER PARA CAMBIARLA
+// LA TIPOGRAFIA SE ESPECIFICA EN theme.design-system.scss
 .core-text-sm {
     font: var(--mdl-typography-body-font-sm);
 }

@@ -24,9 +24,20 @@ $green:       #357a32 !default;
 $red:         #ca3120 !default;
 $yellow:      #f0ad4e !default;
 
-$brand-color: #f98012 !default;
+$gris-claro: #f4f4f4;
+$gris-medio: #eeeeee;
+$gris-oscuro: #bbbbbb;
+$verde-savio: #05a0a0;
+$verde-savio-oscuro: #048787;
 
-$text-color:               $gray-900 !default;
+// AGREGUE ESTO QUE ENCONTRE DE LA FUENTE EN LA PAG WEB PERO NO FUNCIONA, O SEA, NO SE ESTA USANDO
+// ENTONCES HAY QUE VER EN QUE PARTE SE ESPECIFICA LA FUENTE PARA USARLO EN TODA LA APP
+$font-family-base: 'Noto Sans', sans-serif !default;
+$font-weight-light: 300 !default;
+$body-font-size: 1rem !default;
+$line-height-base: 1.65 !default;
+
+$text-color:               $black !default;
 $text-color-rgb:           color-to-rgb-list($text-color) !default;
 $text-color-dark:          $white !default;
 $text-color-dark-rgb:      color-to-rgb-list($text-color-dark) !default;
@@ -41,8 +52,8 @@ $ion-item-background-rgb:  color-to-rgb-list($ion-item-background) !default;
 $ion-item-background-dark: $gray-900 !default;
 $ion-item-background-dark-rgb: color-to-rgb-list($ion-item-background-dark) !default;
 
-$primary:      $brand-color !default;
-$primary-dark: $brand-color !default;
+$primary:      $verde-savio !default;
+$primary-dark: $verde-savio !default;
 $secondary:    $gray-300 !default;
 $danger:       $red !default;
 $warning:      $yellow !default;
