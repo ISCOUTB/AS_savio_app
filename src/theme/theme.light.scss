@@ -112,7 +112,8 @@
     --core-bottom-tabs-badge-text-color: var(--primary-contrast);
     --core-bottom-tabs-border-color-active: var(--primary);
 
-    --core-link-color: var(--info);
+    // Change the links colors to white to be visible on the green header background.
+    --core-link-color: var(--white);
 
     --core-header-toolbar-background: var(--white);
     --core-header-toolbar-border-color: var(--stroke);

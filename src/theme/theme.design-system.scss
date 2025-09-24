@@ -4,7 +4,7 @@
 
 :root {
     // Add serif fallback font for km language in some devices.
-    --ion-font-family: var(--ion-default-font), serif;
+    --ion-font-family: var(--ion-default-font), serif; // AQUI ESTA LO DE LA DEFAULT FONT, ENTONCES HAY QUE VER DONDE SE ESPECIFICA PARA HACER EL CAMBIO
 
     // Variables in the design system should be named using the following pattern:
     // SYSTEM-CATEGORY-CONCEPT-PROPERTY-VARIANT (where the only required part is SYSTEM)

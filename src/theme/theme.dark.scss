@@ -108,7 +108,8 @@
             --ion-background-color: var(--background);
         }
 
-        --core-link-color: var(--info-tint);
+        // Change the links colors to white to be visible on the green header background.
+        --core-link-color: var(--white);
 
         --core-header-toolbar-background:   var(--gray-900);
         --core-header-toolbar-color:        var(--text-color);
