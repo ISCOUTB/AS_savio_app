@@ -3,9 +3,6 @@
 @import "theme.dark";
 
 :root {
-    // Add serif fallback font for km language in some devices.
-    --ion-font-family: var(--ion-default-font), serif; // AQUI ESTA LO DE LA DEFAULT FONT, ENTONCES HAY QUE VER DONDE SE ESPECIFICA PARA HACER EL CAMBIO
-
     // Variables in the design system should be named using the following pattern:
     // SYSTEM-CATEGORY-CONCEPT-PROPERTY-VARIANT (where the only required part is SYSTEM)
     // SYSTEM: The name of the design system (e.g. ion, mdl, app, etc.)
@@ -24,9 +21,10 @@
     // ***** TYPOGRAPHY category ***** //
     // Sintaxis:[ <font-style> || <font-variant> || <font-weight> ]? <font-size> [ / <line-height> ]? <font-family>
     --mdl-typography-fontSize-sm: #{dynamic-font(12px)}; // 0.75rem
-    --mdl-typography-fontSize-md: #{dynamic-font(14px)}; // 0.875rem
-    --mdl-typography-fontSize-lg: #{dynamic-font(16px)}; // 1rem
+    --mdl-typography-fontSize-md: #{dynamic-font(16px)}; // 1rem
+    --mdl-typography-fontSize-lg: #{dynamic-font(24.352px)}; // 1.522rem
 
+    --mdl-typography-fontWeight-light: 300;
     --mdl-typography-fontWeight-normal: 400;
     --mdl-typography-fontWeight-medium: 500;
 

@@ -34,6 +34,9 @@
         --ion-safe-area-bottom: var(--root-safe-area-bottom);
         --keyboard-height: var(--root-keyboard-height);
     }
+
+    --ion-default-font: 'Noto Sans', sans-serif !important;
+    --ion-font-family: var(--ion-default-font), serif;
 }
 
 a {
