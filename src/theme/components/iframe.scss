@@ -32,7 +32,7 @@ body.core-iframe-fullscreen {
         .ion-page ion-header {
             --core-header-toolbar-height: 48px;
             --core-header-toolbar-color: white;
-            --core-header-toolbar-background: black;
+            --core-header-toolbar-background: var(--core-header-gradient);
             --core-header-buttons-color: var(--core-header-toolbar-color);
             --core-header-toolbar-border-width: 0px;
 

@@ -89,7 +89,7 @@
     "customurlscheme": "moodlemobile",
     "sites": [
         {
-             "url": "https://savio.utb.edu.co"
+             "url": "http://saviotest.utb.edu.co"
         }
     ],
     "multisitesdisplay": "",
@@ -105,7 +105,7 @@
     "showTopLogo": "hidden",
     "ioswebviewscheme": "moodleappfs",
     "appstores": {
-        "android": "com.moodle.moodlemobile",
+        "android": "co.edu.utb.saviomobile",
         "ios": "id633359593"
     },
     "wsrequestqueuelimit": 10,
@@ -141,5 +141,5 @@
     },
     "clearIABSessionWhenAutoLogin": "android",
     "collapsibleItemsExpanded": false,
-    "siteurl": "https://savio.utb.edu.co"
+    "siteurl": "http://saviotest.utb.edu.co"
 }

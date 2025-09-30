@@ -1,8 +1,20 @@
 @if (showLogo && logoLoaded) {
     <div class="core-logo-container">
-        @if (siteLogo) {
-            <img [url]="siteLogo" class="core-logo" [alt]="'core.login.logoof' | translate: { $a: siteName }" core-external-content
-                [siteId]="siteId" (onLoad)="imageLoaded($event)" [hidden]="logoError">
+        <!-- Show SAVIO logo (DID NOT WORK)-->
+        @if (!logoError) {
+            <img src="assets/img/top_logo.png"
+                class="core-logo"
+                alt="Logo institucional"
+                (error)="imageLoaded(false)"
+                (load)="imageLoaded(true)">
+        }
+        @if (logoError && siteLogo) {
+            <img [url]="siteLogo"
+                class="core-logo"
+                [alt]="'core.login.logoof' | translate: { $a: siteName }"
+                core-external-content
+                [siteId]="siteId"
+                (onLoad)="imageLoaded($event)">
         }
         @if (!siteLogo || logoError) {
             <img [src]="fallbackLogo" class="core-logo core-logo-fallback" [alt]="'core.login.logoof' | translate: { $a: appName }">
@@ -10,6 +22,7 @@
     </div>
 }
 
+<!-- Shows the SiteName only if there is not a site Logo or there is a Logo error -->
 @if (showSiteName && siteName) {
     @switch (siteNameMode) {
         @case ('p') {

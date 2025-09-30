@@ -32,10 +32,7 @@ $verde-savio-oscuro: #048787;
 
 // AGREGUE ESTO QUE ENCONTRE DE LA FUENTE EN LA PAG WEB PERO NO FUNCIONA, O SEA, NO SE ESTA USANDO
 // ENTONCES HAY QUE VER EN QUE PARTE SE ESPECIFICA LA FUENTE PARA USARLO EN TODA LA APP
-$font-family-base: 'Noto Sans', sans-serif !default;
-$font-weight-light: 300 !default;
-$body-font-size: 1rem !default;
-$line-height-base: 1.65 !default;
+$font-family-base: 'Noto Sans', sans-serif;
 
 $text-color:               $black !default;
 $text-color-rgb:           color-to-rgb-list($text-color) !default;

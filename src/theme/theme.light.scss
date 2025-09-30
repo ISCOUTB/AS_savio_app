@@ -104,7 +104,7 @@
 
     --ion-placeholder-color: var(--subdued-text-color);
 
-    --core-bottom-tabs-background: var(--white);
+    --core-bottom-tabs-background: var(--color-tabs-background);
     --core-bottom-tabs-color: var(--ion-text-color-step-400);
     --core-bottom-tabs-color-selected: var(--dark);
     --core-bottom-tabs-background-selected: transparent;
@@ -115,7 +115,7 @@
     // Change the links colors to white to be visible on the green header background.
     --core-link-color: var(--white);
 
-    --core-header-toolbar-background: var(--white);
+    --core-header-toolbar-background: var(--core-header-gradient);
     --core-header-toolbar-border-color: var(--stroke);
     --core-header-toolbar-color: var(--text-color);
     --core-header-buttons-background: transparent;

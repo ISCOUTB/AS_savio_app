@@ -15,9 +15,6 @@
     &.ios {
         font-size: calc(100% * var(--zoom-ratio));
     }
-    // Gradient used for header background linke the logo or "Vista general del curso" (AUN NO SE SI FUNCIONA AQUI O DONDE SE COLOCA PARA USARLO)
-    // VIENDO HAY UN DOCUMENTO ESPECIFICO PARA EL HEADER ENTONCES TAL VEZ IRIA AHI
-    --core-header-gradient: linear-gradient(to bottom, #f4f4f4, #e5e5e5);
 
     // Apply zoom ratio to safe area and keyboard height CSS variable.
     // Also, store safe area variables as --root-safe-area-*.
@@ -35,8 +32,11 @@
         --keyboard-height: var(--root-keyboard-height);
     }
 
-    --ion-default-font: 'Noto Sans', sans-serif !important;
-    --ion-font-family: var(--ion-default-font), serif;
+    --ion-default-font: 'Noto Sans';
+    --ion-font-family: var(--ion-default-font), sans-serif;
+    --color-tabs-background: #EBE7E8; // Color de fondo de las pestañas (tabs) en la parte inferior
+    // Gradient used for header background link the logo or "Vista general del curso" (AUN NO SE SI FUNCIONA AQUI O DONDE SE COLOCA PARA USARLO)
+    --core-header-gradient: linear-gradient(to bottom, #f4f4f4, #e5e5e5);
 }
 
 a {
